@@ -21,7 +21,12 @@ const generateToken = (id) => {
  * @access  Public
  */
 const signupUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, institution } = req.body;
+
+  // Stronger validation to ensure all fields are present
+  if (!email || !password || !institution) {
+    return res.status(400).json({ message: 'Please provide email, password, and institution' });
+  }
 
   try {
     // Check if the user already exists in the database
@@ -34,7 +39,8 @@ const signupUser = async (req, res) => {
     // Create a new user document in the database
     const user = await User.create({
       email,
-      password, // The password will be automatically hashed by the middleware in userModel.js
+      password, // The password will be automatically hashed by the pre-save hook in userModel.js
+      institution,
     });
 
     if (user) {
@@ -42,6 +48,7 @@ const signupUser = async (req, res) => {
       res.status(201).json({
         _id: user._id,
         email: user.email,
+        institution: user.institution,
         token: generateToken(user._id),
       });
     } else {
@@ -70,6 +77,7 @@ const loginUser = async (req, res) => {
       res.json({
         _id: user._id,
         email: user.email,
+        institution: user.institution,
         token: generateToken(user._id),
       });
     } else {

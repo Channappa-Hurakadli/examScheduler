@@ -76,8 +76,9 @@ import InvigilatorModule from './InvigilatorModule';
 import PreviewPanel from './PreviewPanel';
 import { ExamProvider } from '../context/ExamContext';
 import History from './History';
+import Profile from './Profile';
 
-export type ActiveModule = 'dashboard' | 'timetable' | 'seating' | 'invigilator'|'history';
+export type ActiveModule = 'dashboard' | 'timetable' | 'seating' | 'invigilator'|'history'| 'profile';
 
 export default function MainApplication() {
   const [activeModule, setActiveModule] = useState<ActiveModule>('dashboard');
@@ -94,6 +95,8 @@ export default function MainApplication() {
         return <InvigilatorModule />;
       case 'history':
         return <History/>;
+      // case 'profile':
+      //   return <Profile/>
       default:
         return <Dashboard onModuleSelect={setActiveModule} />;
     }
@@ -101,7 +104,7 @@ export default function MainApplication() {
 
   return (
     <ExamProvider>
-      <div className="min-h-screen bg-gray-50 flex space-x-0 lg:space-x-6">
+      <div className="min-h-screen bg-gray-50 flex space-x-0 lg:space-x-1">
         <Sidebar 
           activeModule={activeModule} 
           onModuleChange={setActiveModule}

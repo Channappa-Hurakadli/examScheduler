@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Calendar, Users, UserCheck, X, Clock, LogOut } from 'lucide-react';
+import { Home, Calendar, Users, UserCheck, X, Clock, LogOut,User } from 'lucide-react';
 import type { ActiveModule } from './MainApplication';
 import { useAuth } from '../context/AuthContext';
 
@@ -16,6 +16,7 @@ const menuItems = [
   { id: 'seating', label: 'Seating', icon: Users },
   { id: 'invigilator', label: 'Invigilators', icon: UserCheck },
   { id: 'history', label: 'History', icon: Clock },
+  // { id: 'profile', label: 'Profile', icon: User },
 ];
 
 export default function Sidebar({ activeModule, onModuleChange, isOpen, onToggle }: SidebarProps) {
@@ -37,12 +38,12 @@ export default function Sidebar({ activeModule, onModuleChange, isOpen, onToggle
         lg:translate-x-0 lg:static lg:inset-0
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
-        <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+        <div className="flex items-center justify-between h-16 px-6 pb-6 border-b border-gray-200 mt-5">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
               <Calendar className="h-5 w-5 text-white" />
             </div>
-            <span className="font-semibold text-gray-900">ExamDesk</span>
+            <span className="font-semibold text-gray-900">ExamScheduler</span>
           </div>
           
           <button
@@ -95,8 +96,8 @@ export default function Sidebar({ activeModule, onModuleChange, isOpen, onToggle
 
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
           <div className="text-xs text-gray-500 text-center">
-            <p>ExamDesk v1.2.1</p>
-            <p className="mt-1">© 2024 Professional Edition</p>
+            <p>ExamScheduler v1.0.0</p>
+            <p className="mt-1">© 2025 Project Edition</p>
           </div>
         </div>
       </div>

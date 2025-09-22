@@ -7,6 +7,7 @@ export default function SignupScreen() {
   const { signup } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [institution, setInstitution] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -14,7 +15,7 @@ export default function SignupScreen() {
     e.preventDefault();
     setLoading(true);
     try {
-      await signup({ email, password });
+      await signup({ email, password, institution });
     } catch (error) {
       console.error("Signup failed", error);
       // You can add user-facing error messages here
@@ -41,6 +42,23 @@ export default function SignupScreen() {
           </div>
 
           <form onSubmit={handleSignup} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Institution Name
+              </label>
+              <div className="relative">
+                <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  value={institution}
+                  onChange={(e) => setInstitution(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                  placeholder="Enter your institution's name"
+                  required
+                />
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Email Address

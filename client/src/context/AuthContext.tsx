@@ -26,17 +26,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
-      // In a real app, you'd verify the token with the backend and fetch user data
-      // For now, we'll simulate a logged-in user if a token exists
-      setUser({
-        id: '1',
-        name: 'Dr. Sarah Johnson',
-        email: 'admin@university.edu',
-        role: 'admin',
-        institution: 'Metropolitan University',
-        avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=150'
-      });
+    const userData = localStorage.getItem('user');
+    if (token && userData) {
+      // If a token and user data exist in storage, restore the session
+      setUser(JSON.parse(userData));
     }
     setLoading(false);
   }, []);
@@ -45,16 +38,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setLoading(true);
     try {
       const response = await apiService.login(credentials);
-      localStorage.setItem('token', response.data.token);
-      // In a real app, you would set the user state based on the response
-      setUser({
+      const userData = {
         id: response.data._id,
         name: 'User', // You might want to return more user info from your login endpoint
         email: response.data.email,
-        role: 'admin',
-        institution: 'Metropolitan University',
+        role: 'admin', // Default role for now
+        institution: response.data.institution, // Using institution from API
         avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=150'
-      });
+      };
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(userData)); // Persist user data
+      setUser(userData);
     } finally {
       setLoading(false);
     }
@@ -64,15 +58,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setLoading(true);
     try {
       const response = await apiService.signup(userInfo);
-      localStorage.setItem('token', response.data.token);
-      setUser({
+      const userData = {
         id: response.data._id,
         name: 'New User',
         email: response.data.email,
         role: 'user',
-        institution: 'Metropolitan University',
+        institution: response.data.institution, // Using institution from API
         avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=150'
-      });
+      };
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(userData)); // Persist user data
+      setUser(userData);
     } finally {
       setLoading(false);
     }
@@ -80,6 +76,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user'); // Clear user data
     setUser(null);
   };
 
@@ -97,3 +94,4 @@ export const useAuth = () => {
     }
     return context;
 };
+

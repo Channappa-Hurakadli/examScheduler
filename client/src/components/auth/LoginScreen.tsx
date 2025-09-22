@@ -66,7 +66,7 @@ export default function LoginScreen() {
                   <Building className="h-6 w-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-white">ExamDesk Pro</h1>
+                  <h1 className="text-2xl font-bold text-white">ExamScheduler</h1>
                   <p className="text-blue-100 text-sm">Professional Edition</p>
                 </div>
               </div>
@@ -101,7 +101,7 @@ export default function LoginScreen() {
             </div>
     
             {/* Stats */}
-            <div className="relative z-10 grid grid-cols-3 gap-6">
+            {/* <div className="relative z-10 grid grid-cols-3 gap-6">
               <div className="text-center">
                 <div className="text-2xl font-bold text-white">500+</div>
                 <div className="text-blue-200 text-sm">Institutions</div>
@@ -114,7 +114,7 @@ export default function LoginScreen() {
                 <div className="text-2xl font-bold text-white">99.9%</div>
                 <div className="text-blue-200 text-sm">Uptime</div>
               </div>
-            </div>
+            </div> */}
           </div>
     
           {/* Right Panel - Login Form */}

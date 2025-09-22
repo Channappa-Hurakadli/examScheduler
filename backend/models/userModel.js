@@ -13,6 +13,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  institution: {
+    type: String,
+    required: true,
+  },
 }, {
   timestamps: true, // Automatically add createdAt and updatedAt fields
 });

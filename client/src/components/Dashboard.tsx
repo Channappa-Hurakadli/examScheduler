@@ -1,6 +1,8 @@
-import React from 'react';
-import { Calendar, Users, UserCheck, FileText, TrendingUp, Clock } from 'lucide-react';
-import type { ActiveModule } from '../components/MainApplication';
+import React, { useState, useEffect } from 'react';
+import { Calendar, Users, UserCheck, FileText, TrendingUp, Clock, Loader2 } from 'lucide-react';
+import type { ActiveModule } from './MainApplication';
+import { apiService } from '../services/api';
+import { formatRelativeTime } from '../utils/time';
 
 interface DashboardProps {
   onModuleSelect: (module: ActiveModule) => void;
@@ -33,20 +35,39 @@ const modules = [
   },
 ];
 
-const recentActivity = [
-  { type: 'timetable', action: 'Generated Spring 2024 Timetable', time: '2 hours ago' },
-  { type: 'seating', action: 'Updated Hall A seating arrangement', time: '4 hours ago' },
-  { type: 'invigilator', action: 'Assigned invigilators for Week 1', time: '1 day ago' },
-];
+const activityTextMap: { [key: string]: string } = {
+  timetable: 'Generated a new Exam Timetable',
+  seating: 'Created a Seating Arrangement',
+  invigilators: 'Assigned Invigilators',
+};
 
 export default function Dashboard({ onModuleSelect }: DashboardProps) {
+  const [recentActivity, setRecentActivity] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRecentActivity = async () => {
+      try {
+        const response = await apiService.getHistory();
+        // Get the 3 most recent items from the history
+        setRecentActivity(response.data.slice(0, 3));
+      } catch (error) {
+        console.error("Failed to fetch recent activity:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecentActivity();
+  }, []);
+
   return (
-    <div className="space-y-12">
+    <div className="space-y-8">
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-8 text-white">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Welcome to Examiner</h1>
+            <h1 className="text-3xl font-bold mb-2">Welcome to ExamDesk</h1>
             <p className="text-blue-100 text-lg">
                Professional exam management solution
             </p>
@@ -135,8 +156,8 @@ export default function Dashboard({ onModuleSelect }: DashboardProps) {
                 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-gray-500">{module.stats.label}</p>
-                    <p className="text-lg font-bold text-gray-900">{module.stats.value}</p>
+                    {/* <p className="text-xs text-gray-500">{module.stats.label}</p>
+                    <p className="text-lg font-bold text-gray-900">{module.stats.value}</p> */}
                   </div>
                   <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center group-hover:bg-blue-100 transition-colors">
                     <span className="text-gray-500 group-hover:text-blue-600">→</span>
@@ -151,17 +172,25 @@ export default function Dashboard({ onModuleSelect }: DashboardProps) {
       {/* Recent Activity */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
-        <div className="space-y-4">
-          {recentActivity.map((activity, index) => (
-            <div key={index} className="flex items-center space-x-4">
-              <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-900">{activity.action}</p>
-                <p className="text-xs text-gray-500">{activity.time}</p>
-              </div>
+        {loading ? (
+            <div className="flex justify-center items-center h-24">
+                <Loader2 className="h-6 w-6 text-blue-600 animate-spin" />
             </div>
-          ))}
-        </div>
+        ) : recentActivity.length > 0 ? (
+            <div className="space-y-4">
+            {recentActivity.map((activity) => (
+                <div key={activity._id} className="flex items-center space-x-4">
+                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900">{activityTextMap[activity.type] || 'Performed an action'}</p>
+                    <p className="text-xs text-gray-500">{formatRelativeTime(activity.createdAt)}</p>
+                </div>
+                </div>
+            ))}
+            </div>
+        ) : (
+            <p className="text-sm text-gray-500 text-center">No recent activity to display.</p>
+        )}
       </div>
     </div>
   );
