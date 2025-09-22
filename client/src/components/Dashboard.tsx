@@ -1,6 +1,6 @@
 import React from 'react';
 import { Calendar, Users, UserCheck, FileText, TrendingUp, Clock } from 'lucide-react';
-import type { ActiveModule } from '../App';
+import type { ActiveModule } from '../components/MainApplication';
 
 interface DashboardProps {
   onModuleSelect: (module: ActiveModule) => void;
@@ -41,7 +41,7 @@ const recentActivity = [
 
 export default function Dashboard({ onModuleSelect }: DashboardProps) {
   return (
-    <div className="space-y-8">
+    <div className="space-y-12">
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-8 text-white">
         <div className="flex items-center justify-between">
@@ -60,7 +60,7 @@ export default function Dashboard({ onModuleSelect }: DashboardProps) {
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -110,7 +110,7 @@ export default function Dashboard({ onModuleSelect }: DashboardProps) {
             <span className="text-gray-500">Available for duty</span>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Main Modules */}
       <div>

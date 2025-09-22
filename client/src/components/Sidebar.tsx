@@ -1,6 +1,7 @@
 import React from 'react';
-import { Home, Calendar, Users, UserCheck, X } from 'lucide-react';
-import type { ActiveModule } from '../App';
+import { Home, Calendar, Users, UserCheck, X, Clock, LogOut } from 'lucide-react';
+import type { ActiveModule } from './MainApplication';
+import { useAuth } from '../context/AuthContext';
 
 interface SidebarProps {
   activeModule: ActiveModule;
@@ -14,9 +15,12 @@ const menuItems = [
   { id: 'timetable', label: 'Timetable', icon: Calendar },
   { id: 'seating', label: 'Seating', icon: Users },
   { id: 'invigilator', label: 'Invigilators', icon: UserCheck },
+  { id: 'history', label: 'History', icon: Clock },
 ];
 
 export default function Sidebar({ activeModule, onModuleChange, isOpen, onToggle }: SidebarProps) {
+  const { logout } = useAuth();
+
   return (
     <>
       {/* Overlay for mobile */}
@@ -65,7 +69,7 @@ export default function Sidebar({ activeModule, onModuleChange, isOpen, onToggle
                   className={`
                     w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors
                     ${isActive 
-                      ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' 
+                      ? 'bg-blue-50 text-blue-700' 
                       : 'text-gray-700 hover:bg-gray-100'
                     }
                   `}
@@ -75,6 +79,17 @@ export default function Sidebar({ activeModule, onModuleChange, isOpen, onToggle
                 </button>
               );
             })}
+          </div>
+
+          {/* Logout Button */}
+          <div className="mt-8 pt-4 border-t border-gray-200">
+            <button
+              onClick={logout}
+              className="w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors"
+            >
+              <LogOut className="h-5 w-5 mr-3 text-gray-500" />
+              Logout
+            </button>
           </div>
         </nav>
 
@@ -88,3 +103,4 @@ export default function Sidebar({ activeModule, onModuleChange, isOpen, onToggle
     </>
   );
 }
+

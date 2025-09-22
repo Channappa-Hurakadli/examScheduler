@@ -1,49 +1,38 @@
-// import { auth } from '../firebaseConfig';
+import axios from 'axios';
 
-// const API_BASE_URL = 'http://localhost:5000/api'; // Your backend URL
+const API_BASE_URL = 'http://localhost:5000/api';
 
-// const getAuthToken = async () => {
-//     const user = auth.currentUser;
-//     if (!user) throw new Error("User not authenticated.");
-//     return await user.getIdToken();
-// };
+const axiosInstance = axios.create({
+  baseURL: API_BASE_URL,
+});
 
-// export const apiService = {
-//     generate: async (module: string, formData: FormData) => {
-//         const token = await getAuthToken();
-//         const response = await fetch(`${API_BASE_URL}/generate/${module}`, {
-//             method: 'POST',
-//             headers: {
-//                 'Authorization': `Bearer ${token}`
-//             },
-//             body: formData,
-//         });
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
-//         if (!response.ok) {
-//             const errorData = await response.json();
-//             throw new Error(errorData.message || `Failed to generate ${module}`);
-//         }
-//         return response.json();
-//     },
+export const apiService = {
+  // Authentication
+  login: (credentials: any) => axiosInstance.post('/auth/login', credentials),
+  signup: (userInfo: any) => axiosInstance.post('/auth/signup', userInfo),
 
-//     getHistory: async (collectionName: string) => {
-//         const token = await getAuthToken();
-//         const response = await fetch(`${API_BASE_URL}/history/${collectionName}`, {
-//             headers: {
-//                 'Authorization': `Bearer ${token}`
-//             }
-//         });
+  // Generation
+  generate: (module: string, formData: FormData) => {
+    return axiosInstance.post(`/generate/${module}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
 
-//         if (!response.ok) {
-//             const errorData = await response.json();
-//             throw new Error(errorData.message || `Failed to fetch history for ${collectionName}`);
-//         }
-        
-//         const history = await response.json();
-//         // Convert Firestore timestamp strings back to Date objects
-//         return history.map((item: any) => ({
-//             ...item,
-//             createdAt: new Date(item.createdAt)
-//         }));
-//     }
-// };
+  // History
+  getHistory: () => axiosInstance.get('/history'),
+};

@@ -7,10 +7,9 @@ const History = require('../models/historyModel');
  */
 const getHistory = async (req, res) => {
   try {
-    // Find all history documents in the database that match the current user's ID.
-    // req.user.uid is added to the request object by our authentication middleware.
-    // We sort by 'createdAt' in descending order to show the most recent items first.
-    const history = await History.find({ user: req.user.uid }).sort({ createdAt: -1 });
+    // Correctly find history documents using the user's MongoDB '_id'.
+    // req.user is attached by the authentication middleware.
+    const history = await History.find({ user: req.user._id }).sort({ createdAt: -1 });
 
     if (history) {
       res.status(200).json(history);
@@ -25,4 +24,3 @@ const getHistory = async (req, res) => {
 };
 
 module.exports = { getHistory };
-
